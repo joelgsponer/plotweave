@@ -8,6 +8,14 @@
 \description{
 Provides tight control over converting ggplot2 plots to SVG with configurable fonts, dimensions, and styling. Enables embedding SVG plots in HTML tables (reactable and kableExtra), creating inline sparkline-like mini-plots powered by ggplot2, and arranging content in flexbox layouts.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/joelgsponer/plotweave}
+  \item Report bugs at \url{https://github.com/joelgsponer/plotweave/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Joel Gsponer \email{joel.gsponer@gmail.com}
 

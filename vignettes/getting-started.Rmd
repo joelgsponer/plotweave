@@ -1,0 +1,160 @@
+---
+title: "Getting Started with plotweave"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with plotweave}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+plotweave provides tight control over converting ggplot2 plots to SVG and
+embedding them in HTML tables and layouts. It is designed for clinical research
+reports, dashboards, and any context where you need publication-quality inline
+plots inside tables.
+
+## Installation
+
+```{r eval = FALSE}
+# Install from GitHub
+remotes::install_github("joelgsponer/plotweave")
+```
+
+## Configuration
+
+plotweave uses an environment-based configuration system. Defaults are sensible
+out of the box, but you can customize fonts, colors, and rendering options:
+```{r}
+library(plotweave)
+
+# View current config
+str(pw_config())
+
+# Customize
+pw_set_config(
+  font_family = "Lato, sans-serif",
+  font_url = "https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap"
+)
+```
+
+## Rendering a ggplot2 Plot to SVG
+
+The core function `render_svg()` converts any ggplot2 object to an SVG string:
+
+```{r}
+library(ggplot2)
+
+p <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  theme_minimal()
+
+svg <- render_svg(p, width = 5, height = 3, add_download_button = FALSE)
+```
+
+For more control, wrap the plot in an `SvgPlot` R6 object:
+
+```{r}
+sp <- SvgPlot$new(
+  plot = p,
+  options_svg = list(width = 5, height = 3, scaling = 1, add_download_button = FALSE)
+)
+sp$get_width()
+sp$get_height()
+```
+
+## Inline Plots for Tables
+
+The main use case for plotweave is embedding small plots inside table cells.
+Each `inline_*()` function returns a `plot_column()` vector that can be placed
+in a data frame column:
+
+```{r}
+library(dplyr)
+
+tbl <- mtcars |>
+  group_by(cyl) |>
+  summarise(
+    n = n(),
+    mpg_hist = inline_histogram(mpg, width = 2.5, height = 0.4),
+    mpg_violin = inline_violin(mpg, width = 2.5, height = 0.4),
+    .groups = "drop"
+  )
+tbl
+```
+
+### Available Inline Plot Types
+
+- `inline_histogram()` — histogram from a numeric vector
+- `inline_violin()` — violin plot with point-range summary
+- `inline_barplot()` — stacked 100% bar chart from a factor
+- `inline_forestplot()` — mini forest plot with confidence interval
+- `inline_pointrange()` — point with error bars
+- `inline_plot()` — wrap **any** ggplot2 object for table embedding
+
+## Rendering Tables
+
+### With reactable
+
+```{r eval = FALSE}
+render_reactable(tbl)
+```
+
+### With kableExtra
+
+```{r eval = FALSE}
+render_kable(tbl)
+```
+
+### As browsable HTML
+
+```{r eval = FALSE}
+render_html(tbl)
+```
+
+## Flexbox Layouts
+
+Arrange multiple outputs in a responsive flexbox layout:
+
+```{r eval = FALSE}
+html_page(
+  title = "My Report",
+  html_flex(
+    html_panel(render_kable(tbl), title = "By Cylinder"),
+    html_panel(render_kable(tbl), title = "Copy"),
+    direction = "row"
+  )
+)
+```
+
+## Theme Helpers
+
+plotweave provides ggplot2 theme modifiers that are useful for inline plots
+but work on any ggplot:
+
+```{r}
+p + hide_legend() + hide_x_axis()
+```
+
+## Color Palette
+
+```{r}
+plotweave_colors()
+plotweave_color("blue")
+plotweave_color("red", alpha = 0.5)
+
+# Use in ggplot2
+pal <- plotweave_palette_discrete()
+pal(4)
+```
+
+## Resetting Configuration
+
+```{r}
+pw_reset_config()
+```
