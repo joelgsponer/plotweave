@@ -1,0 +1,40 @@
+Package: plotweave
+Title: Weave ggplot2 Plots into HTML as SVG
+Version: 0.1.0
+Authors@R:
+    person("Joel", "Gsponer", , "joel.gsponer@gmail.com", role = c("aut", "cre"))
+Description: Provides tight control over converting ggplot2 plots to SVG with
+    configurable fonts, dimensions, and styling. Enables embedding SVG plots
+    in HTML tables (reactable and kableExtra), creating inline sparkline-like
+    mini-plots powered by ggplot2, and arranging content in flexbox layouts.
+License: MIT + file LICENSE
+Depends:
+    R (>= 4.1.0)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    cli,
+    dplyr,
+    forcats,
+    ggplot2 (>= 3.4.0),
+    glue,
+    htmltools,
+    memoise,
+    purrr,
+    R6,
+    rlang,
+    stringr,
+    svglite,
+    tibble,
+    vctrs
+Suggests:
+    ggdist,
+    kableExtra,
+    knitr,
+    reactable,
+    reactablefmtr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    tidyr
+Config/testthat/edition: 3
